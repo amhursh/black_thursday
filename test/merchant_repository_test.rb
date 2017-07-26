@@ -67,7 +67,7 @@ class MerchantRepositoryTest < Minitest::Test
     assert_equal 12334271, merchant.id
   end
 
-  def test_merchant_repo_can_find_merchant_by_id
+  def test_merchant_repo_can_find_merchant_by_name
     mr = MerchantRepository.new('./data/merchants.csv', self)
     merchant = mr.find_by_name("Necklacemaniac")
 
