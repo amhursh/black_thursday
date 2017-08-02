@@ -77,7 +77,7 @@ class CustomerAnalyticsTest < Minitest::Test
     assert buyers.all? {|buyer| buyer.is_a?(Customer)}
   end
 
-  def test_one_time_buyers_item
+  def test_one_time_buyers_top_items
     skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
@@ -89,7 +89,7 @@ class CustomerAnalyticsTest < Minitest::Test
     })
     sales_analyst = SalesAnalyst.new(sales_engine)
 
-    item = sales_analyst.one_time_buyers_item
+    item = sales_analyst.one_time_buyers_top_items
 
     assert_instance_of Item, item
   end

@@ -62,9 +62,10 @@ class CustomerRepository
 
   def customer_merchants_by_customer_expenditure(customer_id)
     customer_merchants = customer_repo_to_se_merchants(customer_id)
-    customer_merchants.sort_by do |merchant|
+    new_merchants = customer_merchants.sort_by do |merchant|
       merchant.revenue_by_customer_id(customer_id)
     end
+    new_merchants.reverse
   end
 
   def customers_by_expenditure

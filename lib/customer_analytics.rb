@@ -50,11 +50,11 @@ module CustomerAnalytics
     def one_time_buyers
       @customers.all.find_all do |customer|
         customer_invoices = @customers.customer_repo_to_se_invoices(customer.id)
-        customer_invoices.length == 1 && customer_invoices[0].transactions.length == 1
+        customer_invoices.length == 1 && customer_invoices[0].is_paid_in_full?
       end
     end
 
-    def one_time_buyers_item
+    def one_time_buyers_top_items
       buyers = one_time_buyers
       total_items = get_invoice_items_from_array(buyers)
       buyer_item = total_items.max_by {|item| total_items.count(item)}
