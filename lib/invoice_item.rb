@@ -21,10 +21,15 @@ class InvoiceItem
     @unit_price = unit_price_in_dollars(@price)
     @created_at = Time.parse(invoice_item_info[:created_at])
     @updated_at = Time.parse(invoice_item_info[:updated_at])
+    @invoice_item_repo = invoice_item_repo
   end
 
   def unit_price_in_dollars(unit_price)
     unit_price / 100
+  end
+
+  def items
+    @invoice_item_repo.invoice_items_to_se_item(item_id)
   end
 
 end

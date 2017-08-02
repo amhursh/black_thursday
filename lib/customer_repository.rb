@@ -48,6 +48,36 @@ class CustomerRepository
     @sales_engine.merchants_by_customer_id(customer_id)
   end
 
+  def customer_repo_to_se_invoices(customer_id)
+    @sales_engine.invoices.find_all_by_customer_id(customer_id)
+  end
+
+  def customer_repo_to_se_invoice_items(customer_id)
+    invoices = customer_repo_to_se_invoices(customer_id)
+    invoices.reduce([]) do |items, invoice|
+      items << invoice.invoice_items
+      items.flatten
+    end
+  end
+
+  def customer_merchants_by_customer_expenditure(customer_id)
+    customer_merchants = customer_repo_to_se_merchants(customer_id)
+    new_merchants = customer_merchants.sort_by do |merchant|
+      merchant.revenue_by_customer_id(customer_id)
+    end
+    new_merchants.reverse
+  end
+
+  def customers_by_expenditure
+    sorted_customers = all.sort_by do |customer|
+      invoices = @sales_engine.invoices_by_customer_id(customer.id)
+      invoices.reduce(0) do |total, invoice|
+        total += invoice.total
+      end
+    end
+    sorted_customers.reverse
+  end
+
   def inspect
     "#<#{self.class} #{@customers.size} rows>"
   end

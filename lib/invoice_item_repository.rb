@@ -1,6 +1,5 @@
 require_relative 'invoice_item'
 require 'csv'
-require 'pry'
 
 class InvoiceItemRepository
 
@@ -43,6 +42,10 @@ class InvoiceItemRepository
     id_repo.values.select do |invoice_item_instance|
       invoice_item_instance.invoice_id == invoice_id
     end
+  end
+
+  def invoice_items_to_se_item(item_id)
+    @sales_engine.item_by_item_id(item_id)
   end
 
   def inspect

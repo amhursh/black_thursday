@@ -23,6 +23,7 @@ module MarketAnalytics
           q_hash[invoice_item.item_id] += attribute_proc.call(invoice_item)
           q_hash
         end
+        q_hash
       end
     end
 
@@ -79,7 +80,7 @@ module MarketAnalytics
     end
 
     def merchants_with_pending_invoices
-      @merchants.id_repo.values.find_all do |merchant|
+      @merchants.all.find_all do |merchant|
         merchant.invoices.any? do |invoice|
           invoice.transactions.none? {|transaction| transaction.result == "success"}
         end
