@@ -34,4 +34,14 @@ class Merchant
     end
   end
 
+  def invoice_items
+    self.invoices.map do |invoice_instance|
+      invoice_instance.invoice_items
+    end.flatten
+  end
+
+  def most_sold
+
+  end
+
 end

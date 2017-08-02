@@ -18,8 +18,10 @@ module MarketAnalytics
       invoice_item_array.reduce({}) do |q_hash, invoice_item|
         if !(q_hash.keys.include?(invoice_item.item_id))
           q_hash.store(invoice_item.item_id, attribute_proc.call(invoice_item))
+          q_hash
         else
           q_hash[invoice_item.item_id] += attribute_proc.call(invoice_item)
+          q_hash
         end
       end
     end
