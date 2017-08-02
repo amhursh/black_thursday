@@ -157,6 +157,65 @@ class MarketAnalyticsTest < Minitest::Test
     assert_instance_of Merchant, pending_merchants[0]
   end
 
+  def test_market_analyst_can_get_sold_items_by_quantity_for_merchant
+    sales_engine = SalesEngine.from_csv({
+      :items     => "./data/items.csv",
+      :merchants => "./data/merchants.csv",
+      :invoices => "./data/invoices.csv",
+      :invoice_items => "./data/invoice_items.csv",
+      :transactions => "./data/transactions.csv"
+      })
+    sa = SalesAnalyst.new(sales_engine)
+    items = sa.get_item_quantity_for_merchant(12334189)
+
+    assert_instance_of Hash, items
+    assert_instance_of Item, items.values[0][0]
+  end
+
+  def test_market_analyst_can_get_most_sold_item_for_merchant
+    sales_engine = SalesEngine.from_csv({
+      :items     => "./data/items.csv",
+      :merchants => "./data/merchants.csv",
+      :invoices => "./data/invoices.csv",
+      :invoice_items => "./data/invoice_items.csv",
+      :transactions => "./data/transactions.csv"
+      })
+    sa = SalesAnalyst.new(sales_engine)
+    item = sa.most_sold_item_for_merchant(12334189)
+    item_2 = sa.most_sold_item_for_merchant(12337105)
+
+    assert_equal 263524984, item[0].id
+  end
+
+  def test_market_analyst_can_get_sold_items_by_revenue_for_merchant
+    sales_engine = SalesEngine.from_csv({
+      :items     => "./data/items.csv",
+      :merchants => "./data/merchants.csv",
+      :invoices => "./data/invoices.csv",
+      :invoice_items => "./data/invoice_items.csv",
+      :transactions => "./data/transactions.csv"
+      })
+    sa = SalesAnalyst.new(sales_engine)
+    items = sa.get_items_sold_by_value_for_merchant(12334189)
+
+    assert_instance_of Hash, items
+    assert_instance_of Item, items.values[0]
+  end
+
+  def test_market_analyst_can_get_best_item_for_merchant
+    sales_engine = SalesEngine.from_csv({
+      :items     => "./data/items.csv",
+      :merchants => "./data/merchants.csv",
+      :invoices => "./data/invoices.csv",
+      :invoice_items => "./data/invoice_items.csv",
+      :transactions => "./data/transactions.csv"
+      })
+    sa = SalesAnalyst.new(sales_engine)
+    item = sa.most_sold_item_for_merchant(12334189)
+
+    assert_equal 263524984, item[0].id
+  end
+
 
 
 end

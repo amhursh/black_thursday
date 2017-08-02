@@ -34,6 +34,18 @@ class Merchant
     end
   end
 
+  def invoice_items
+    self.paid_invoices.map do |invoice_instance|
+      invoice_instance.invoice_items
+    end.flatten
+  end
+
+  def paid_invoices
+    self.invoices.select do |invoice|
+      invoice.is_paid_in_full?
+    end
+  end
+  
   def revenue_by_customer_id(customer_id)
     self.invoices.inject(0) do |sum, invoice_instance|
       if invoice_instance.customer_id == customer_id

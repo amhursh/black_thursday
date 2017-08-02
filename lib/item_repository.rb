@@ -105,8 +105,10 @@ class ItemRepository
     items.flatten
   end
 
+  private
+
   def inspect
-    "#<#{self.class} #{@items.size} rows>"
+    "#<#{self.class} #{@id_repo.size} rows>"
   end
 
 end

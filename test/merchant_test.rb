@@ -117,4 +117,19 @@ class MerchantTest < Minitest::Test
     assert_equal 81572.4, revenue.to_f
   end
 
+  def test_merhcant_can_get_invoice_items
+    se = SalesEngine.from_csv({
+      :merchants => './data/merchants.csv',
+      :invoices => './data/invoices.csv',
+      :invoice_items => './data/invoice_items.csv'
+      })
+    merchants = se.merchants
+    merchant = merchants.find_by_id(12335119)
+    invoice_items = merchant.invoice_items
+
+    assert_instance_of Array, invoice_items
+    assert_instance_of InvoiceItem, invoice_items[0]
+    assert_equal 42, invoice_items.count
+  end
+
 end
