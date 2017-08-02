@@ -1,5 +1,3 @@
-require 'pry'
-
 module CustomerAnalytics
 
   private
@@ -78,7 +76,7 @@ module CustomerAnalytics
       customer_items = customer_items.sort_by do |item|
         total_quantity_of_item_in_invoice_item_array(item, customer_invoice_items)
       end
-      find_top_items_by_quantity(customer_items.reverse, customer_invoice_items)
+      find_top_items_by_quantity(customer_items.reverse, customer_invoice_items).reverse
     end
 
     def customers_with_unpaid_invoices
@@ -94,7 +92,7 @@ module CustomerAnalytics
     def best_invoice_by_quantity
       @invoices.all.max_by do |invoice|
         invoice.invoice_items.reduce(0) do |quantity, invoice_item|
-          if invoice.status != :pending
+          if invoice.is_paid_in_full?
             quantity += invoice_item.quantity
           end
           quantity

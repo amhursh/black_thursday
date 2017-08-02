@@ -166,7 +166,6 @@ class CustomerAnalyticsTest < Minitest::Test
   end
 
   def test_best_invoice_by_quantity
-    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
@@ -180,6 +179,7 @@ class CustomerAnalyticsTest < Minitest::Test
     best_invoice = sales_analyst.best_invoice_by_quantity
 
     assert_instance_of Invoice, best_invoice
+    assert_equal 1281, best_invoice.id
   end
 
 end
