@@ -35,13 +35,15 @@ class Merchant
   end
 
   def invoice_items
-    self.invoices.map do |invoice_instance|
+    self.paid_invoices.map do |invoice_instance|
       invoice_instance.invoice_items
     end.flatten
   end
 
-  def most_sold
-
+  def paid_invoices
+    self.invoices.select do |invoice|
+      invoice.is_paid_in_full?
+    end
   end
 
 end

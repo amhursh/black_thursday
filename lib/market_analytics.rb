@@ -76,12 +76,30 @@ module MarketAnalytics
       sales_engine.merchants_by_revenue
     end
 
+    # def most_sold_item_for_merchant(merchant_id)
+    #   paid_invoice_items = merchant_paid_invoice_items(merchant_id)
+    #   quantity_proc = Proc.new {|invoice_item| invoice_item.quantity}
+    #   quantity_hash = create_invoice_item_hash_by_attribute(paid_invoice_items, quantity_proc)
+    #   most_sold_item_id = quantity_hash.max_by {|pair| pair[1]}
+    #   @items.find_by_id(most_sold_item_id)
+    # end
+
+    def get_item_quantity_for_merchant(merchant_id)
+      merchant = sales_engine.merchants.find_by_id(merchant_id)
+      merchant.invoice_items.inject({}) do |quantities, invoice_item|
+        quantity = invoice_item.quantity
+        if quantities.has_key?(quantity)
+          quantities[quantity] << sales_engine.items.find_by_id(invoice_item.item_id)
+        else
+          quantities[quantity] = [sales_engine.items.find_by_id(invoice_item.item_id)]
+        end
+        quantities
+      end
+    end
+
     def most_sold_item_for_merchant(merchant_id)
-      paid_invoice_items = merchant_paid_invoice_items(merchant_id)
-      quantity_proc = Proc.new {|invoice_item| invoice_item.quantity}
-      quantity_hash = create_invoice_item_hash_by_attribute(paid_invoice_items, quantity_proc)
-      most_sold_item_id = quantity_hash.max_by {|pair| pair[1]}
-      @items.find_by_id(most_sold_item_id)
+      item_quantity = get_item_quantity_for_merchant(merchant_id)
+      item_quantity[item_quantity.keys.max]
     end
 
     def best_item_for_merchant(merchant_id)
