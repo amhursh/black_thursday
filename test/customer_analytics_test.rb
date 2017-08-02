@@ -95,6 +95,7 @@ class CustomerAnalyticsTest < Minitest::Test
   end
 
   def test_items_bought_in_year
+    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
@@ -122,10 +123,10 @@ class CustomerAnalyticsTest < Minitest::Test
     })
     sales_analyst = SalesAnalyst.new(sales_engine)
 
-    highest_items = sales_analyst.highest_volume_items(2)
+    highest_items = sales_analyst.highest_volume_items(200)
 
     assert_instance_of Array, highest_items
-    refute_nil highest_items[0]
+    assert_equal 6, highest_items.length
   end
 
   def test_customers_with_unpaid_invoices
@@ -148,6 +149,7 @@ class CustomerAnalyticsTest < Minitest::Test
   end
 
   def test_best_invoice_by_revenue
+    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
@@ -164,6 +166,7 @@ class CustomerAnalyticsTest < Minitest::Test
   end
 
   def test_best_invoice_by_quantity
+    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",

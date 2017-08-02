@@ -1,3 +1,5 @@
+require 'pry'
+
 module CustomerAnalytics
 
   private
@@ -12,6 +14,7 @@ module CustomerAnalytics
     def get_items_from_array(arr)
       arr.reduce([]) do |items, element|
         items << element.items
+        items.flatten
       end
     end
 
@@ -69,7 +72,7 @@ module CustomerAnalytics
     end
 
     def highest_volume_items(customer_id)
-      customer_invoices = find_paid_customer_invoices(customer_id)
+      customer_invoices = @invoices.find_all_by_customer_id(customer_id)
       customer_invoice_items = get_invoice_items_from_array(customer_invoices)
       customer_items = get_items_from_array(customer_invoice_items).uniq
       customer_items = customer_items.sort_by do |item|
@@ -91,7 +94,10 @@ module CustomerAnalytics
     def best_invoice_by_quantity
       @invoices.all.max_by do |invoice|
         invoice.invoice_items.reduce(0) do |quantity, invoice_item|
-          quantity += invoice_item.quantity
+          if invoice.status != :pending
+            quantity += invoice_item.quantity
+          end
+          quantity
         end
       end
     end
