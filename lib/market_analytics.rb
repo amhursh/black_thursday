@@ -76,14 +76,6 @@ module MarketAnalytics
       sales_engine.merchants_by_revenue
     end
 
-    # def most_sold_item_for_merchant(merchant_id)
-    #   paid_invoice_items = merchant_paid_invoice_items(merchant_id)
-    #   quantity_proc = Proc.new {|invoice_item| invoice_item.quantity}
-    #   quantity_hash = create_invoice_item_hash_by_attribute(paid_invoice_items, quantity_proc)
-    #   most_sold_item_id = quantity_hash.max_by {|pair| pair[1]}
-    #   @items.find_by_id(most_sold_item_id)
-    # end
-
     def get_item_quantity_for_merchant(merchant_id)
       merchant = sales_engine.merchants.find_by_id(merchant_id)
       merchant.invoice_items.inject({}) do |quantities, invoice_item|
@@ -102,12 +94,26 @@ module MarketAnalytics
       item_quantity[item_quantity.keys.max]
     end
 
+    # def best_item_for_merchant(merchant_id)
+    #   paid_invoice_items = merchant_paid_invoice_items(merchant_id)
+    #   quantity_proc = Proc.new {|invoice_item| invoice_item.quantity * invoice_item.unit_price.to_f}
+    #   quantity_hash = create_invoice_item_hash_by_attribute(paid_invoice_items, quantity_proc)
+    #   most_sold_item_id = quantity_hash.max_by {|pair| pair[1]}
+    #   @items.find_by_id(most_sold_item_id)
+    # end
+
+    def get_items_sold_by_value_for_merchant(merchant_id)
+      merchant = sales_engine.merchants.find_by_id(merchant_id)
+      merchant.invoice_items.inject({}) do |quantities, invoice_item|
+        revenue = invoice_item.quantity * invoice_item.unit_price
+        quantities[revenue] = sales_engine.items.find_by_id(invoice_item.item_id)
+        quantities
+      end
+    end
+
     def best_item_for_merchant(merchant_id)
-      paid_invoice_items = merchant_paid_invoice_items(merchant_id)
-      quantity_proc = Proc.new {|invoice_item| invoice_item.quantity * invoice_item.unit_price.to_f}
-      quantity_hash = create_invoice_item_hash_by_attribute(paid_invoice_items, quantity_proc)
-      most_sold_item_id = quantity_hash.max_by {|pair| pair[1]}
-      @items.find_by_id(most_sold_item_id)
+      items_by_value = get_items_sold_by_value_for_merchant(merchant_id)
+      items_by_value[items_by_value.keys.max]
     end
 
     def merchants_with_pending_invoices
