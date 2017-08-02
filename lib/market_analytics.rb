@@ -26,41 +26,11 @@ module MarketAnalytics
       end
     end
 
-    # def invoices_on_this_date(date)
-    #   @invoices.all.find_all do |invoice|
-    #     invoice.created_at.yday == date.yday && invoice.is_paid_in_full?
-    #   end
-    # end
-
     def invoices_on_this_date(date)
       sales_engine.invoices.find_all_by_date(date)
     end
 
   public
-
-    # def total_revenue_by_date(date)
-    #   invoices_on_this_date(date).reduce(0) do |total_revenue, invoice|
-    #     total_revenue += invoice.total.to_f
-    #   end.round(2)
-    # end
-
-    # def revenue_by_merchant(merchant_id)
-    #   merchant = @merchants.find_by_id(merchant_id)
-    #   merchant.invoices.reduce(0) do |total, invoice|
-    #     total += invoice.total.to_f
-    #   end.round(2)g
-    # end
-
-    # def top_revenue_earners(number=20)
-    #   duplicated_merchant_repo = @merchants.id_repo.clone
-    #   top = []
-    #   number.times do
-    #     max = duplicated_merchant_repo.max_by {|merchant| revenue_by_merchant(merchant[0])}
-    #     duplicated_merchant_repo.delete(max[0])
-    #     top << @merchants.find_by_id(max[0])
-    #   end
-    #   top
-    # end
 
     def total_revenue_by_date(date)
       invoices_on_this_date(date).inject(0) do |sum, invoice_instance|
@@ -93,14 +63,6 @@ module MarketAnalytics
       item_quantity = get_item_quantity_for_merchant(merchant_id)
       item_quantity[item_quantity.keys.max]
     end
-
-    # def best_item_for_merchant(merchant_id)
-    #   paid_invoice_items = merchant_paid_invoice_items(merchant_id)
-    #   quantity_proc = Proc.new {|invoice_item| invoice_item.quantity * invoice_item.unit_price.to_f}
-    #   quantity_hash = create_invoice_item_hash_by_attribute(paid_invoice_items, quantity_proc)
-    #   most_sold_item_id = quantity_hash.max_by {|pair| pair[1]}
-    #   @items.find_by_id(most_sold_item_id)
-    # end
 
     def get_items_sold_by_value_for_merchant(merchant_id)
       merchant = sales_engine.merchants.find_by_id(merchant_id)
