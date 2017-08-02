@@ -5,7 +5,6 @@ require_relative '../lib/sales_analyst'
 class CustomerAnalyticsTest < Minitest::Test
 
   def test_top_buyers_default
-    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
@@ -24,7 +23,6 @@ class CustomerAnalyticsTest < Minitest::Test
   end
 
   def test_top_buyers_arguement
-    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
@@ -43,7 +41,6 @@ class CustomerAnalyticsTest < Minitest::Test
   end
 
   def test_top_merchant_for_customer
-    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
@@ -60,7 +57,6 @@ class CustomerAnalyticsTest < Minitest::Test
   end
 
   def test_one_time_buyers
-    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
@@ -78,7 +74,6 @@ class CustomerAnalyticsTest < Minitest::Test
   end
 
   def test_one_time_buyers_top_items
-    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
@@ -95,7 +90,6 @@ class CustomerAnalyticsTest < Minitest::Test
   end
 
   def test_items_bought_in_year
-    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
@@ -126,11 +120,12 @@ class CustomerAnalyticsTest < Minitest::Test
     highest_items = sales_analyst.highest_volume_items(200)
 
     assert_instance_of Array, highest_items
+    assert_equal 263420195, highest_items.first.id
+    assert_equal 263448547, highest_items.last.id
     assert_equal 6, highest_items.length
   end
 
   def test_customers_with_unpaid_invoices
-    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
@@ -149,7 +144,6 @@ class CustomerAnalyticsTest < Minitest::Test
   end
 
   def test_best_invoice_by_revenue
-    skip
     sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
