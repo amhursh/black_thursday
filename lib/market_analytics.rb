@@ -21,6 +21,7 @@ module MarketAnalytics
         else
           q_hash[invoice_item.item_id] += attribute_proc.call(invoice_item)
         end
+        q_hash
       end
     end
 
@@ -75,11 +76,17 @@ module MarketAnalytics
     end
 
     def most_sold_item_for_merchant(merchant_id)
-      paid_invoice_items = merchant_paid_invoice_items(merchant_id)
-      quantity_proc = Proc.new {|invoice_item| invoice_item.quantity}
-      quantity_hash = create_invoice_item_hash_by_attribute(paid_invoice_items, quantity_proc)
-      most_sold_item_id = quantity_hash.max_by {|pair| pair[1]}
-      @items.find_by_id(most_sold_item_id)
+      # paid_invoice_items = merchant_paid_invoice_items(merchant_id)
+      # merchant = @merchants.find_by_id(merchant_id)
+      # merchant.items.max_by do |item|
+      #   merchant.invoices.reduce(0) do |total, invoice|
+      #     invoice.invoice_items.reduce(0) do |
+      #
+      #
+      # quantity_proc = Proc.new {|invoice_item| invoice_item.quantity}
+      # quantity_hash = create_invoice_item_hash_by_attribute(paid_invoice_items, quantity_proc)
+      # most_sold_item_id = quantity_hash.max_by {|pair| pair[1]}
+      # @items.find_by_id(most_sold_item_id)
     end
 
     def best_item_for_merchant(merchant_id)
@@ -91,7 +98,7 @@ module MarketAnalytics
     end
 
     def merchants_with_pending_invoices
-      @merchants.id_repo.values.find_all do |merchant|
+      @merchants.all.find_all do |merchant|
         merchant.invoices.any? do |invoice|
           invoice.transactions.none? {|transaction| transaction.result == "success"}
         end
