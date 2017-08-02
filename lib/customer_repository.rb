@@ -68,12 +68,13 @@ class CustomerRepository
   end
 
   def customers_by_expenditure
-    all.sort_by do |customer|
+    sorted_customers = all.sort_by do |customer|
       invoices = @sales_engine.invoices_by_customer_id(customer.id)
       invoices.reduce(0) do |total, invoice|
         total += invoice.total
       end
     end
+    sorted_customers.reverse
   end
 
   def inspect
