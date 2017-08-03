@@ -40,7 +40,7 @@ class SalesAnalyst
        "October" => 10,
        "November" => 11,
        "December" => 12}
-     end
+    end
 
     def total_items
       @items.all.count.to_f

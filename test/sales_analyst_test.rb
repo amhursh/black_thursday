@@ -48,7 +48,7 @@ class SalesAnalystTest < Minitest::Test
     sales_analyst = SalesAnalyst.new(sales_engine)
     merchant_id = 12334105
 
-    average_item_price = sales_analyst.average_item_price_for_merchant(12334105)
+    average_item_price = sales_analyst.average_item_price_for_merchant(merchant_id)
     assert_equal 16.66, average_item_price
   end
 

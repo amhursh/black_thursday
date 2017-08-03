@@ -48,8 +48,6 @@ class MarketAnalyticsTest < Minitest::Test
     })
     sales_analyst = SalesAnalyst.new(sales_engine)
 
-    merchant_id_1 = 12334228
-    merchant_id_2 = 12334832
     revenue_1 = sales_analyst.revenue_by_merchant(12334228)
     revenue_2 = sales_analyst.revenue_by_merchant(12334832)
 
@@ -105,8 +103,6 @@ class MarketAnalyticsTest < Minitest::Test
     })
     sales_analyst = SalesAnalyst.new(sales_engine)
 
-    merchant_id_1 = 12334228
-    merchant_id_2 = 12334832
     item_1 = sales_analyst.most_sold_item_for_merchant(12334228)
     item_2 = sales_analyst.most_sold_item_for_merchant(12334832)
 
@@ -127,9 +123,6 @@ class MarketAnalyticsTest < Minitest::Test
     })
     sales_analyst = SalesAnalyst.new(sales_engine)
 
-
-    merchant_id_1 = 12334228
-    merchant_id_2 = 12334832
     item_1 = sales_analyst.best_item_for_merchant(12334228)
     item_2 = sales_analyst.best_item_for_merchant(12334832)
 
@@ -182,7 +175,6 @@ class MarketAnalyticsTest < Minitest::Test
       })
     sa = SalesAnalyst.new(sales_engine)
     item = sa.most_sold_item_for_merchant(12334189)
-    item_2 = sa.most_sold_item_for_merchant(12337105)
 
     assert_equal 263524984, item[0].id
   end
