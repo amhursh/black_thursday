@@ -121,15 +121,16 @@ class MerchantTest < Minitest::Test
     se = SalesEngine.from_csv({
       :merchants => './data/merchants.csv',
       :invoices => './data/invoices.csv',
-      :invoice_items => './data/invoice_items.csv'
+      :invoice_items => './data/invoice_items.csv',
+      :transactions => './data/transactions.csv'
       })
     merchants = se.merchants
-    merchant = merchants.find_by_id(12335119)
+    merchant = merchants.find_by_id(12334389)
     invoice_items = merchant.invoice_items
 
     assert_instance_of Array, invoice_items
     assert_instance_of InvoiceItem, invoice_items[0]
-    assert_equal 42, invoice_items.count
+    assert_equal 46, invoice_items.count
   end
 
 end
