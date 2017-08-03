@@ -16,11 +16,13 @@ module CustomerAnalytics
       end
     end
 
-    def total_quantity_of_item_in_invoice_item_array(item, invoice_item_array)
+    def total_item_in_inv_itm_array(item, invoice_item_array)
       item_invoice_items = invoice_item_array.find_all do |invoice_item|
         invoice_item.item_id == item.id
       end
-      item_invoice_items.reduce(0) {|total, invoice_item| total += invoice_item.quantity}
+      item_invoice_items.reduce(0) do |total, invoice_item|
+        total += invoice_item.quantity
+      end
     end
 
     def find_paid_customer_invoices(customer_id)
@@ -32,8 +34,8 @@ module CustomerAnalytics
 
     def find_top_items_by_quantity(item_array, invoice_item_array)
       item_array.find_all do |item|
-        max = total_quantity_of_item_in_invoice_item_array(item_array[0], invoice_item_array)
-        current = total_quantity_of_item_in_invoice_item_array(item, invoice_item_array)
+        max = total_item_in_inv_itm_array(item_array[0], invoice_item_array)
+        current = total_item_in_inv_itm_array(item, invoice_item_array)
         current == max
       end
     end
@@ -64,7 +66,9 @@ module CustomerAnalytics
 
     def items_bought_in_year(customer_id, year)
       customer_invoices = find_paid_customer_invoices(customer_id)
-      invoices_in_year = customer_invoices.find_all {|invoice| invoice.created_at.year == year}
+      invoices_in_year = customer_invoices.find_all do |invoice|
+        invoice.created_at.year == year
+      end
       invoice_items_in_year = get_invoice_items_from_array(invoices_in_year)
       get_items_from_array(invoice_items_in_year)
     end
@@ -74,9 +78,11 @@ module CustomerAnalytics
       customer_invoice_items = get_invoice_items_from_array(customer_invoices)
       customer_items = get_items_from_array(customer_invoice_items).uniq
       customer_items = customer_items.sort_by do |item|
-        total_quantity_of_item_in_invoice_item_array(item, customer_invoice_items)
+        total_item_in_inv_itm_array(item, customer_invoice_items)
       end
-      find_top_items_by_quantity(customer_items.reverse, customer_invoice_items).reverse
+      find_top_items_by_quantity(
+      customer_items.reverse, customer_invoice_items
+      ).reverse
     end
 
     def customers_with_unpaid_invoices
