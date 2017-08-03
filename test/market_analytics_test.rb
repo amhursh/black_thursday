@@ -3,50 +3,38 @@ require_relative '../lib/sales_analyst'
 
 class MarketAnalyticsTest < Minitest::Test
 
-  def test_include
-    skip
-    sales_engine = SalesEngine.from_csv({
+  attr_reader :sales_engine,
+              :sales_analyst
+
+  def setup
+    @sales_engine = SalesEngine.from_csv({
       :items     => "./data/items.csv",
       :merchants => "./data/merchants.csv",
       :invoices => "./data/invoices.csv",
       :invoice_items => "./data/invoice_items.csv",
       :transactions => "./data/transactions.csv"
     })
-    sales_analyst = SalesAnalyst.new(sales_engine)
+    @sales_analyst = SalesAnalyst.new(sales_engine)
+  end
 
-    refute_equal nil, sales_analyst.invoice_items
-    refute_equal nil, sales_analyst.transactions
-    refute_equal nil, sales_analyst.total_revenue_by_date(Time.new(2013, 12, 20))
+  def test_include
+    invoice_items = sales_analyst.invoice_items
+    transactions = sales_analyst.transactions
+    total_rev_by_date = sales_analyst.total_revenue_by_date(Time.new(2013, 12, 20))
+
+    refute_nil invoice_items
+    refute_nil transactions
+    refute_nil total_rev_by_date
   end
 
   def test_total_revenue_by_date
-    skip
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv",
-      :invoices => "./data/invoices.csv",
-      :invoice_items => "./data/invoice_items.csv",
-      :transactions => "./data/transactions.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
-    date = Time.new(2001, 10, 23)
+    date = Time.parse("2009-02-07")
     total_revenue = sales_analyst.total_revenue_by_date(date)
 
-    assert_equal 109794.68, total_revenue
+    assert_equal 21067.77, total_revenue
   end
 
   def test_revenue_by_merchant
-    skip
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv",
-      :invoices => "./data/invoices.csv",
-      :invoice_items => "./data/invoice_items.csv",
-      :transactions => "./data/transactions.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     revenue_1 = sales_analyst.revenue_by_merchant(12334228)
     revenue_2 = sales_analyst.revenue_by_merchant(12334832)
 
@@ -55,16 +43,6 @@ class MarketAnalyticsTest < Minitest::Test
   end
 
   def test_top_revenue_earners_default
-    skip
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv",
-      :invoices => "./data/invoices.csv",
-      :invoice_items => "./data/invoice_items.csv",
-      :transactions => "./data/transactions.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     top_earners = sales_analyst.top_revenue_earners
 
     assert_instance_of Array, top_earners
@@ -74,17 +52,8 @@ class MarketAnalyticsTest < Minitest::Test
   end
 
   def test_top_revenue_earners_with_argument
-    skip
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv",
-      :invoices => "./data/invoices.csv",
-      :invoice_items => "./data/invoice_items.csv",
-      :transactions => "./data/transactions.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     top_five = sales_analyst.top_revenue_earners(5)
+    top_earners = sales_analyst.top_revenue_earners
 
     assert_instance_of Array, top_five
     assert_instance_of Merchant, top_five[0]
@@ -93,15 +62,6 @@ class MarketAnalyticsTest < Minitest::Test
   end
 
   def test_most_sold_item_for_merchant
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv",
-      :invoices => "./data/invoices.csv",
-      :invoice_items => "./data/invoice_items.csv",
-      :transactions => "./data/transactions.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     item_1 = sales_analyst.most_sold_item_for_merchant(12334228)
     item_2 = sales_analyst.most_sold_item_for_merchant(12334832)
 
@@ -112,37 +72,14 @@ class MarketAnalyticsTest < Minitest::Test
   end
 
   def test_best_item_for_merchant
-    skip
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv",
-      :invoices => "./data/invoices.csv",
-      :invoice_items => "./data/invoice_items.csv",
-      :transactions => "./data/transactions.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     item_1 = sales_analyst.best_item_for_merchant(12334228)
     item_2 = sales_analyst.best_item_for_merchant(12334832)
 
-    assert_instance_of Array, item_1
-    assert_instance_of Item, item_1[0]
-    assert_instance_of Array, item_2
-    assert_instance_of Item, item_2[0]
+    assert_instance_of Item, item_1
+    assert_instance_of Item, item_2
   end
 
   def test_merchants_with_pending_invoices
-    skip
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv",
-      :invoices => "./data/invoices.csv",
-      :invoice_items => "./data/invoice_items.csv",
-      :transactions => "./data/transactions.csv"
-
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     pending_merchants = sales_analyst.merchants_with_pending_invoices
 
     assert_instance_of Array, pending_merchants
@@ -150,63 +87,29 @@ class MarketAnalyticsTest < Minitest::Test
   end
 
   def test_market_analyst_can_get_sold_items_by_quantity_for_merchant
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv",
-      :invoices => "./data/invoices.csv",
-      :invoice_items => "./data/invoice_items.csv",
-      :transactions => "./data/transactions.csv"
-      })
-    sa = SalesAnalyst.new(sales_engine)
-    items = sa.get_item_quantity_for_merchant(12334189)
+    items = sales_analyst.get_item_quantity_for_merchant(12334189)
 
     assert_instance_of Hash, items
     assert_instance_of Item, items.values[0][0]
   end
 
   def test_market_analyst_can_get_most_sold_item_for_merchant
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv",
-      :invoices => "./data/invoices.csv",
-      :invoice_items => "./data/invoice_items.csv",
-      :transactions => "./data/transactions.csv"
-      })
-    sa = SalesAnalyst.new(sales_engine)
-    item = sa.most_sold_item_for_merchant(12334189)
+    item = sales_analyst.most_sold_item_for_merchant(12334189)
 
     assert_equal 263524984, item[0].id
   end
 
   def test_market_analyst_can_get_sold_items_by_revenue_for_merchant
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv",
-      :invoices => "./data/invoices.csv",
-      :invoice_items => "./data/invoice_items.csv",
-      :transactions => "./data/transactions.csv"
-      })
-    sa = SalesAnalyst.new(sales_engine)
-    items = sa.get_items_sold_by_value_for_merchant(12334189)
+    items = sales_analyst.get_items_sold_by_value_for_merchant(12334189)
 
     assert_instance_of Hash, items
     assert_instance_of Item, items.values[0]
   end
 
   def test_market_analyst_can_get_best_item_for_merchant
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv",
-      :invoices => "./data/invoices.csv",
-      :invoice_items => "./data/invoice_items.csv",
-      :transactions => "./data/transactions.csv"
-      })
-    sa = SalesAnalyst.new(sales_engine)
-    item = sa.most_sold_item_for_merchant(12334189)
+    item = sales_analyst.most_sold_item_for_merchant(12334189)
 
     assert_equal 263524984, item[0].id
   end
-
-
 
 end

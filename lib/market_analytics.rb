@@ -5,7 +5,7 @@ module MarketAnalytics
 
     def merchant_paid_invoice_items(merchant_id)
       merchant = @merchants.find_by_id(merchant_id)
-      paid_invoices = merchant.invoices.find_all {|invoice| invoice.is_paid_in_full?}
+      paid_invoices = merchant.paid_invoices
       paid_invoices.reduce([]) do |total_item_instances, invoice|
         total_item_instances << @invoice_items.id_repo.values.find_all do |item|
           invoice.id == item.invoice_id
@@ -14,13 +14,13 @@ module MarketAnalytics
       end
     end
 
-    def create_invoice_item_hash_by_attribute(invoice_item_array, attribute_proc)
+    def create_invoice_item_hash_by_attribute(invoice_item_array, attrib_proc)
       invoice_item_array.reduce({}) do |q_hash, invoice_item|
         if !(q_hash.keys.include?(invoice_item.item_id))
-          q_hash.store(invoice_item.item_id, attribute_proc.call(invoice_item))
+          q_hash.store(invoice_item.item_id, attrib_proc.call(invoice_item))
           q_hash
         else
-          q_hash[invoice_item.item_id] += attribute_proc.call(invoice_item)
+          q_hash[invoice_item.item_id] += attrib_proc.call(invoice_item)
           q_hash
         end
         q_hash
@@ -49,14 +49,14 @@ module MarketAnalytics
 
     def get_item_quantity_for_merchant(merchant_id)
       merchant = sales_engine.merchants.find_by_id(merchant_id)
-      merchant.invoice_items.inject({}) do |quantities, invoice_item|
-        quantity = invoice_item.quantity
-        if quantities.has_key?(quantity)
-          quantities[quantity] << sales_engine.items.find_by_id(invoice_item.item_id)
+      merchant.invoice_items.inject({}) do |outpt, inv_itm|
+        quantity = inv_itm.quantity
+        if outpt.has_key?(quantity)
+          outpt[quantity] << sales_engine.items.find_by_id(inv_itm.item_id)
         else
-          quantities[quantity] = [sales_engine.items.find_by_id(invoice_item.item_id)]
+          outpt[quantity] = [sales_engine.items.find_by_id(inv_itm.item_id)]
         end
-        quantities
+        outpt
       end
     end
 
@@ -67,10 +67,10 @@ module MarketAnalytics
 
     def get_items_sold_by_value_for_merchant(merchant_id)
       merchant = sales_engine.merchants.find_by_id(merchant_id)
-      merchant.invoice_items.inject({}) do |quantities, invoice_item|
-        revenue = invoice_item.quantity * invoice_item.unit_price
-        quantities[revenue] = sales_engine.items.find_by_id(invoice_item.item_id)
-        quantities
+      merchant.invoice_items.inject({}) do |outpt, inv_itm|
+        revenue = inv_itm.quantity * inv_itm.unit_price
+        outpt[revenue] = sales_engine.items.find_by_id(inv_itm.item_id)
+        outpt
       end
     end
 
@@ -81,8 +81,8 @@ module MarketAnalytics
 
     def merchants_with_pending_invoices
       @merchants.all.find_all do |merchant|
-        merchant.invoices.any? do |invoice|
-          invoice.transactions.none? {|transaction| transaction.result == "success"}
+        merchant.invoices.any? do |inv|
+          inv.transactions.none? {|transaction| transaction.result == "success"}
         end
       end
     end
