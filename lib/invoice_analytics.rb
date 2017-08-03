@@ -19,7 +19,7 @@ module InvoiceAnalytics
     end
 
     def invoices_by_day
-      stuff = @invoices.all.reduce({"Monday" => [],
+      @invoices.all.reduce({"Monday" => [],
                             "Tuesday" => [],
                              "Wednesday" => [],
                              "Thursday" => [],
@@ -71,7 +71,7 @@ module InvoiceAnalytics
 
     def top_days_by_invoice_count
       two_stndv_above_avg = average_invoices_per_day_standard_deviation + average_invoices_per_day
-      top_days = invoices_by_day.keys.find_all do |day|
+      invoices_by_day.keys.find_all do |day|
         invoices_by_day[day].count >= two_stndv_above_avg
       end
     end

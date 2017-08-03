@@ -6,7 +6,7 @@ module MarketAnalytics
     def merchant_paid_invoice_items(merchant_id)
       merchant = @merchants.find_by_id(merchant_id)
       paid_invoices = merchant.invoices.find_all {|invoice| invoice.is_paid_in_full?}
-      paid_invoice_items =  paid_invoices.reduce([]) do |total_item_instances, invoice|
+      paid_invoices.reduce([]) do |total_item_instances, invoice|
         total_item_instances << @invoice_items.id_repo.values.find_all do |item|
           invoice.id == item.invoice_id
         end
