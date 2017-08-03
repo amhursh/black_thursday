@@ -2,37 +2,34 @@ require_relative 'test_helper'
 require_relative '../lib/sales_analyst'
 
 class SalesAnalystTest < Minitest::Test
-  def test_average_items_per_merchant
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
 
+  attr_reader :sales_engine,
+              :sales_analyst
+
+  def setup
+    @sales_engine = SalesEngine.from_csv({
+      :items     => "./data/items.csv",
+      :merchants => "./data/merchants.csv",
+      :invoices  => "./data/invoices.csv",
+      :transactions => "./data/transactions.csv",
+      :invoice_items => "./data/invoice_items.csv"
+    })
+    @sales_analyst = SalesAnalyst.new(sales_engine)
+  end
+
+  def test_average_items_per_merchant
     average_items = sales_analyst.average_items_per_merchant
 
     assert_equal 2.88, average_items
   end
 
   def test_average_items_per_merchant_standard_deviation
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     standard_deviation = sales_analyst.average_items_per_merchant_standard_deviation
 
     assert_equal 3.26, standard_deviation
   end
 
   def test_merchants_with_high_item_count
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     high_item_merchants = sales_analyst.merchants_with_high_item_count
 
     assert_instance_of Array, high_item_merchants
@@ -40,11 +37,6 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_average_item_price_for_merchant
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
     merchant_id = 12334105
 
     average_item_price = sales_analyst.average_item_price_for_merchant(merchant_id)
@@ -52,24 +44,13 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_average_average_price_per_merchant
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     average_price = sales_analyst.average_average_price_per_merchant
 
-    assert_equal 252.53, average_price
+    assert_instance_of BigDecimal, average_price
+    assert_equal 350.29, average_price.to_f
   end
 
   def test_golden_items
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     golden_items = sales_analyst.golden_items
 
     assert_instance_of Array, golden_items
@@ -77,12 +58,6 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_merchants_with_only_one_item
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     lonely_merchants = sales_analyst.merchants_with_only_one_item
 
     assert_instance_of Array, lonely_merchants
@@ -91,12 +66,6 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_merchants_with_only_one_item_registered_in_month
-    sales_engine = SalesEngine.from_csv({
-      :items     => "./data/items.csv",
-      :merchants => "./data/merchants.csv"
-    })
-    sales_analyst = SalesAnalyst.new(sales_engine)
-
     month = "January"
     lonely_merchants = sales_analyst.merchants_with_only_one_item_registered_in_month(month)
 
@@ -104,6 +73,13 @@ class SalesAnalystTest < Minitest::Test
     assert_instance_of Merchant, lonely_merchants[0]
     assert lonely_merchants.all? {|merchant| merchant.items.count == 1}
     assert lonely_merchants.all? {|merchant| merchant.items[0].created_at.month == 1}
+  end
+
+  def test_revenue_by_merchant
+    revenue = sales_analyst.revenue_by_merchant(12334194)
+
+    assert_instance_of BigDecimal, revenue
+    assert_equal 81572.4, revenue.to_f
   end
 
 end
