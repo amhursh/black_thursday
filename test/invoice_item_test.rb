@@ -23,7 +23,7 @@ class InvoiceItemTest < Minitest::Test
     )
     id = invoice_item.id
 
-    assert_equal 15, invoice_item.id
+    assert_equal 15, id
   end
 
   def test_invoice_item_has_item_id

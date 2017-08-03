@@ -41,7 +41,7 @@ module CustomerAnalytics
   public
 
     def top_buyers(num=20)
-      @customers.customers_by_expenditure[0..(num -1)]
+      @customers.customers_by_expenditure[0..(num - 1)]
     end
 
     def top_merchant_for_customer(customer_id)
