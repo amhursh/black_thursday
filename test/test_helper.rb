@@ -1,7 +1,6 @@
 require 'simplecov'
-SimpleCov.start do
-  add_filter "/test/"
-end
+SimpleCov.start
+
 require 'minitest'
 require 'minitest/autorun'
 require 'minitest/pride'

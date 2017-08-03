@@ -1,5 +1,3 @@
-require_relative '../lib/merchant_repository'
-
 class Merchant
 
   attr_reader :name,
@@ -45,7 +43,7 @@ class Merchant
       invoice.is_paid_in_full?
     end
   end
-  
+
   def revenue_by_customer_id(customer_id)
     self.invoices.inject(0) do |sum, invoice_instance|
       if invoice_instance.customer_id == customer_id

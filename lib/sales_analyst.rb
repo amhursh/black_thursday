@@ -84,7 +84,7 @@ class SalesAnalyst
         total = merchant.items.reduce(0) do |total_price, item|
           total_price += item.unit_price
         end
-        average = (total / merchant.items.count).round(2)
+        (total / merchant.items.count).round(2)
       end
     end
 
