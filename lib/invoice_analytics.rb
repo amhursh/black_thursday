@@ -44,7 +44,12 @@ module InvoiceAnalytics
 
     def average_invoices_per_merchant_standard_deviation
       merchant_invoices = Proc.new {|merchant| merchant.invoices.count}
-      standard_deviation(average_invoices_per_merchant, @merchants.all, merchant_invoices, total_merchants)
+      standard_deviation(
+        average_invoices_per_merchant,
+        @merchants.all,
+        merchant_invoices,
+        total_merchants
+        )
     end
 
     def average_invoices_per_day_standard_deviation
@@ -56,21 +61,30 @@ module InvoiceAnalytics
     end
 
     def top_merchants_by_invoice_count
-      two_stndv_above_avg = (average_invoices_per_merchant_standard_deviation * 2) + average_invoices_per_merchant
+      two_stndv_above_avg = (
+        (average_invoices_per_merchant_standard_deviation * 2) +
+        average_invoices_per_merchant
+        )
       @merchants.all.find_all do |merchant|
         merchant.invoices.count >= two_stndv_above_avg
       end
     end
 
     def bottom_merchants_by_invoice_count
-      two_stndv_below_avg = average_invoices_per_merchant - (average_invoices_per_merchant_standard_deviation * 2)
+      two_stndv_below_avg = (
+        average_invoices_per_merchant -
+        (average_invoices_per_merchant_standard_deviation * 2)
+        )
       @merchants.all.find_all do |merchant|
         merchant.invoices.count <= two_stndv_below_avg
       end
     end
 
     def top_days_by_invoice_count
-      two_stndv_above_avg = average_invoices_per_day_standard_deviation + average_invoices_per_day
+      two_stndv_above_avg = (
+        average_invoices_per_day_standard_deviation +
+        average_invoices_per_day
+        )
       invoices_by_day.keys.find_all do |day|
         invoices_by_day[day].count >= two_stndv_above_avg
       end
