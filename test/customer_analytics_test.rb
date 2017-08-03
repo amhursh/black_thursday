@@ -91,4 +91,13 @@ class CustomerAnalyticsTest < Minitest::Test
     assert_equal 1281, best_invoice.id
   end
 
+  def test_total_items_in_invoice_array
+    customer_invoices = sales_analyst.invoices.find_all_by_customer_id(49)
+    customer_invoice_items = sales_analyst.get_invoice_items_from_array(customer_invoices)
+    customer_item = sales_analyst.get_items_from_array(customer_invoice_items).uniq[1]
+    total = total_item_in_inv_itm_array(customer_item, customer_invoice_items)
+
+    assert_equal 134, total
+  end
+
 end
