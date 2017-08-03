@@ -48,6 +48,8 @@ class InvoiceItemRepository
     @sales_engine.item_by_item_id(item_id)
   end
 
+  private
+
   def inspect
     "#<#{self.class} #{@id_repo.size} rows>"
   end

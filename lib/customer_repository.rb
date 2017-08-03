@@ -78,6 +78,8 @@ class CustomerRepository
     sorted_customers.reverse
   end
 
+  private
+
   def inspect
     "#<#{self.class} #{@id_repo.size} rows>"
   end

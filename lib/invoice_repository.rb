@@ -76,6 +76,8 @@ class InvoiceRepository
     @sales_engine.invoice_items_by_invoice_id(invoice_id)
   end
 
+  private
+
   def inspect
     "#<#{self.class} #{@id_repo.size} rows>"
   end
