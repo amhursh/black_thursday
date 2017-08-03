@@ -11,14 +11,14 @@ class Transaction
               :updated_at,
               :transaction_repo
 
-  def initialize(transaction_info, transaction_repo)
-    @id                          = transaction_info[:id].to_i
-    @invoice_id                  = transaction_info[:invoice_id].to_i
-    @credit_card_number          = transaction_info[:credit_card_number].to_i
-    @credit_card_expiration_date = transaction_info[:credit_card_expiration_date]
-    @result                      = transaction_info[:result]
-    @created_at                  = Time.parse(transaction_info[:created_at])
-    @updated_at                  = Time.parse(transaction_info[:updated_at])
+  def initialize(transact_info, transaction_repo)
+    @id                          = transact_info[:id].to_i
+    @invoice_id                  = transact_info[:invoice_id].to_i
+    @credit_card_number          = transact_info[:credit_card_number].to_i
+    @credit_card_expiration_date = transact_info[:credit_card_expiration_date]
+    @result                      = transact_info[:result]
+    @created_at                  = Time.parse(transact_info[:created_at])
+    @updated_at                  = Time.parse(transact_info[:updated_at])
     @transaction_repo            = transaction_repo
   end
 
